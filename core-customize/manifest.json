@@ -169,10 +169,6 @@
         "value": "responsive"
       },
       {
-        "key": "googleEmbedApiKey",
-        "value": "AIzaSyD34TXbUsiyJnysJ-1Un657elxVy_OYpTs"
-      },
-      {
         "key": "storefront.show.checkout.flows",
         "value": "true"
       },
