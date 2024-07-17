@@ -1,0 +1,17 @@
+<div class="slider-container row col-12 p-0">
+  <span class="col-2 pl-0 d-flex justify-content-end">{{ minValue }}</span>
+  <input 
+    type="range"
+    id="range"
+    class="cx-consumption-slider col-8"
+    [(ngModel)]="selectedValue"
+    list="customSteps" 
+    [attr.min]="minValue"
+    [attr.max]="maxValue"
+    (input)="changeOptionValue(selectedValue)">
+  <span class="col-2 pr-0">{{ maxValue }}</span>
+
+  <datalist id="customSteps">
+    <option *ngFor="let value of sliderValues" [value]="value"></option>
+  </datalist>
+</div>

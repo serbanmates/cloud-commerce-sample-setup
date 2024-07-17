@@ -1,0 +1,66 @@
+<div [ngClass]="{'border rounded cx-po-search-by-consumption-content': !isProductDetailsPage}">
+  <div *ngIf="poConsumption.name" class="d-flex row justify-content-end cx-po-search-by-consumption">
+    <p
+      class="cx-consumption-slider-info-bold col-12"
+      *ngIf="isHomepage"
+    >{{ 'consumption.discover' | cxTranslate }} 
+    {{ poConsumption.productSpecification.name }} 
+    {{ 'consumption.offers' | cxTranslate }}
+    </p>
+
+    <div 
+      class="d-flex col-12 flex-wrap align-items-center"
+      [ngClass]="{'p-0': isProductDetailsPage}">
+      <span class="col-sm-7 col-xs-12 p-0">{{ 'consumption.annualConsumption' | cxTranslate }}</span>
+      <div class="col-sm-5 col-xs-12 d-flex pr-0" [formGroup]="consumptionForm">
+        <input
+          class="p-0 pl-2"
+          type="number"
+          min="0"
+          step="1"
+          pattern="\d*"
+          id="consumptionInput"
+          name="consumption"
+          required
+          placeholder="{{ 'consumption.consumptionInput.placeholder' | cxTranslate }}"
+          formControlName="consumptionInput"
+          (input)="inputConsumptionValueChange($event)"
+        />
+        <label class="m-0 p-0 pr-2" for="consumptionInput">
+          {{ poConsumption.usageUnit.name }}/{{ poConsumption.billingFrequency }}
+        </label>
+      </div>
+    </div>  
+
+    <div 
+      *ngIf="sliderOptions"
+      class="col-12"
+      [ngClass]="{'p-0': isProductDetailsPage}">
+      <cx-slider-option
+        [consumption]="consumption"
+        [sliderOptions]="sliderOptions"
+        [usageUnit]="poConsumption.usageUnit.name"
+        [billingFrequency]="poConsumption.billingFrequency"
+        (consumptionValue)="sliderConsumptionValueChange($event)">
+      </cx-slider-option>
+    </div>
+
+    <ng-container *ngIf="!url">
+      <div class="col-12 d-flex justify-content-end">
+        <button
+          class="btn btn-tertiary btn-block"
+          type="button"
+          (click)="saveConsumption()"
+          [disabled]="consumptionForm.invalid"
+          [routerLink]="isHomepage ? 
+            ({
+              cxRoute: 'category',
+              params: {code: poConsumption.productSpecification.id}
+            } | cxUrl) : null"
+          [queryParams]="queryParams">
+          {{ getButtonText() | cxTranslate }}
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>

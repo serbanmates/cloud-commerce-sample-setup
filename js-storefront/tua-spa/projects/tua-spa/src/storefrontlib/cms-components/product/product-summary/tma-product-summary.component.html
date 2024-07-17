@@ -1,0 +1,78 @@
+<ng-container *ngIf="page$ |async as page else loading">
+  <ng-container *ngIf="product$ | async as product">
+    <ng-container *ngIf="currency$ | async as currency">
+      <ng-template
+        [cxOutlet]="outlets.PRICE"
+        [cxOutletContext]="{ product: product }"
+      >
+
+        <!-- Update consumption link -->
+        <ng-container
+          *ngIf="productService.isProductSpecificationForAverageCost(product?.productSpecification?.id)">
+          <ng-container *ngIf="priceService.getUsageUnits(product).length <= 1; else costEstimationWarningMessage">
+            <ng-container *ngIf="url$ | async as url">
+              <ng-container *ngIf="getConsumptionComponent(page, product) as consumptionComponent">
+                <div
+                  *ngFor="let poConsumption of consumptionComponent?.searchByConsumptionComponents | keyvalue"
+                  >
+                  <ng-container>
+                    <cx-po-search-by-consumption
+                      [poConsumption]="poConsumption.value"
+                      [isHomepage]="false"
+                      [isProductDetailsPage]="true">
+                    </cx-po-search-by-consumption>
+                  </ng-container>
+                </div>
+
+                <br/>
+
+                <div class="col-12">
+                  <div class="row d-flex">
+                    <div #averageCostPerMonth
+                         class="cx-size-large cx-bold">{{ getAverageCostPerMonth(product, currency, consumptionComponent) }}</div>
+                    <div>&nbsp;/ {{ 'productDetails.month' | cxTranslate }}</div>
+                  </div>
+                  <div class="row cx-size-small d-flex">
+                    (
+                    <div #averageCostPerYear>
+                      {{ getAverageCostPerYear(product, currency, consumptionComponent) }}
+                    </div>
+                    / {{ 'productDetails.year' | cxTranslate }}*)
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-template #costEstimationWarningMessage>
+            <!-- Usage unit warning message -->
+            <div class="text-warning cx-size-small">
+              {{ 'productDetails.costEstimationWarningMessage' | cxTranslate }}
+            </div>
+            <br/>
+          </ng-template>
+        </ng-container>
+
+        <ng-container
+          *ngIf="!productService.isProductSpecificationForAverageCost(product?.productSpecification?.id) ||
+              priceService.getUsageUnits(product).length > 1">
+          <div *ngIf="this.priceService.getHighestPriorityPriceForSPO(product) as highestPriorityPrice">
+            <cx-price-display [price]="highestPriorityPrice" [discounts]="priceService.getDiscountPricesForSPO(product)"></cx-price-display>
+          </div>
+        </ng-container>
+      </ng-template>
+
+      <ng-template
+        [cxOutlet]="outlets.SUMMARY"
+        [cxOutletContext]="{ product: product }"
+      >
+        <p [innerHTML]="product?.summary" class="summary"></p>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <div class="cx-spinner">
+    <cx-spinner></cx-spinner>
+  </div>
+</ng-template>
